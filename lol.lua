@@ -103,18 +103,29 @@ local MoneyThresholdBox = Tab1:AddInput("MoneyThreshold", {
 })
 
 -- Toggle Bypass 10M (agora executa função)
-local Bypass10MToggle = Tab1:AddToggle("Bypass10M", {Title = "Bypass 10M", Default = false})
-Bypass10MToggle:OnChanged(function(state)
-    print(state and "Bypass 10M enabled" or "Bypass 10M disabled")
+local Bypass10MToggle = Tab1:AddToggle("Bypass10M", {Title = "Bypass 10M Fake", Default = false})
 
+Bypass10MToggle:OnChanged(function(state)
     if state then
-        -- Função que será executada ao ativar o toggle
-        local function Hello_World(text)
-            print(text)
+        print("Bypass 10M Fake Enabled")
+        -- Função para simular log com delay
+        local function fakeLog(msg, delayTime)
+            delay(delayTime or math.random(1,3), function()
+                print("[Fake AutoJoin Log] " .. msg)
+            end)
         end
-        Hello_World("Print")
+
+        -- Simula várias ações do Auto Joiner
+        fakeLog("Trying to connect to server...", 1)
+        fakeLog("Connected to WebSocket", 2)
+        fakeLog("Bypassing 10m server: 1234567890", 3)
+        fakeLog("Join server clicked (10m+ bypass)", 4)
+        fakeLog("Finished bypass successfully!", 5)
+    else
+        print("Bypass 10M Fake Disabled")
     end
 end)
+
 
 -- Auto Join Toggle
 local AutoJoinToggle = Tab1:AddToggle("AutoJoinToggle", {Title = "Enable Auto Join", Default = false})
