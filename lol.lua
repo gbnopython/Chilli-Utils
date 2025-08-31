@@ -1,48 +1,236 @@
-local a=loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local b=loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
-local c=loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
-local d=game:GetService("HttpService")
-local e=a:CreateWindow({Title="Chilli Utils",SubTitle="",TabWidth=160,Size=UDim2.fromOffset(500,350),Acrylic=true,Theme="Amethyst",MinimizeKey=Enum.KeyCode.LeftControl})
-local f=e:AddTab({Title="Auto Joiner",Icon="search"})
-local g=e:AddTab({Title="Stock",Icon="package"})
-local h=e:AddTab({Title="Info",Icon="info"})
-local i=e:AddTab({Title="Settings",Icon="settings"})
-h:AddParagraph({Title="About",Content="This script was developed by masssync.\nVersion: 1.0\nGitHub: github.com/gbnopython\nDiscord: w1ndpeak\n\nThanks to all contributors and testers.\nUse responsibly!"})
-local j=g:AddDropdown("FormatStyle",{Title="Format Style",Values={"Discord"},Multi=false,Default=1})
-j:OnChanged(function(k)print("Selected Format Style:",k)end)
-j:SetValue("Discord")
-g:AddButton({Title="Get Local Stock",Description="",Callback=function()print("Executing Get Local Stock...")end})
-g:AddButton({Title="Get Server Stock",Description="",Callback=function()print("Executing Get Server Stock...")end})
-g:AddButton({Title="Merge Stock",Description="",Callback=function()print("Executing Merge Stock...")end})
-local l=f:AddDropdown("Notify",{Title="notifiers",Values={"10m+"},Multi=false,Default=1})
-l:OnChanged(function(m)print("Notify selecionado:",m)a:Notify({Title="Notify",Content="Você escolheu: "..m,Duration=5})end)
-l:SetValue("10m+")
-local n=f:AddDropdown("OGPets",{Title="OG Pet",Values={"Strawberry Elephant"},Multi=false,Default=1})
-n:OnChanged(function(o)print("OG Pet selected:",o)end)
-local p=f:AddDropdown("SecretPets",{Title="Secret Pet",Values={"Los Combinasionas","La Grande Combinasion","Chicleteira Bicicleteira","Graipuss Medussi","Garama and Madundung","Esok Sekolah","Dragon Canelloni"},Multi=true,Default={}})
-p:OnChanged(function(q)print("Secret Pets selected:",table.concat(q,", "))end)
-local r=f:AddDropdown("CommonPets",{Title="Common Pet",Values={"Cat","Dog","Rabbit","Parrot"},Multi=true,Default={}})
-r:OnChanged(function(s)print("Common Pets selected:",table.concat(s,", "))end)
-local t=f:AddDropdown("MythicPets",{Title="Mythic Pet",Values={"Phoenix","Dragon","Unicorn"},Multi=true,Default={}})
-t:OnChanged(function(u)print("Mythic Pets selected:",table.concat(u,", "))end)
-local v=f:AddDropdown("LegendaryPets",{Title="Legendary Pet",Values={"Golden Dragon","Celestial Wolf","Ancient Phoenix"},Multi=true,Default={}})
-v:OnChanged(function(w)print("Legendary Pets selected:",table.concat(w,", "))end)
-local x=f:AddInput("MoneyThreshold",{Title="Min Farm",Placeholder="Ex: 10",Default="",Callback=function(y)local z=tonumber(y)if z then print("Money Threshold set to:",z)else print("Invalid value! Please enter a number.")end end})
-local A=f:AddToggle("Bypass10M",{Title="Bypass 10M",Default=false})
-A:OnChanged(function(B)print(B and "Bypass 10M enabled" or "Bypass 10M disabled")end)
-local C=f:AddToggle("AutoJoinToggle",{Title="Enable Auto Join",Default=false})
-C:OnChanged(function(D)if D then spawn(function()(function()repeat wait()until game:IsLoaded() local E="ws://127.0.0.1:51948" local function F(G)print("[AutoJoiner]: "..G)end local function H()for _,I in ipairs(game:GetService("CoreGui"):GetChildren())do if I:IsA("ScreenGui")and I:FindFirstChild("Job-ID Input",true)then return I end end return nil end local function J(K,L)local M=K:FindFirstChild("Job-ID Input",true)if not M then return nil end local N=M:FindFirstChild("InputFrame",true)if not N then return nil end local O=N:FindFirstChild("InputBox",true)if O and O:IsA("TextBox")then O.Text=L F("Textbox updated: "..L.." (10m+ bypass)") return O end return nil end local function P(Q)local R=Q:FindFirstChild("Join Job-ID",true)if not R then return nil end return R:FindFirstChildWhichIsA("TextButton",true)end local function S(T)local U=H() J(U,T) local V=P(U) task.defer(function()task.wait(0.001) for _,W in ipairs(getconnections(V.MouseButton1Click))do W:Fire() end F("Join server clicked (10m+ bypass)")end)end local function X(Y) local Z,aa=loadstring(Y) if Z then local ab,ac=pcall(Z) if not ab then F("Error while executing script: "..ac)end else F("Some unexcepted error: "..aa)end end local function ad() while true do F("Trying to connect to "..E) local ae,af=pcall(WebSocket.connect,E) if ae and af then F("Connected to WebSocket") local ag=af ag.OnMessage:Connect(function(ah) if not string.find(ah,"TeleportService")then F("Bypassing 10m server: "..ah) S(ah) else F("Running the script: "..ah) X(ah)end end) local ai=false ag.OnClose:Connect(function() if not ai then ai=true F("The websocket closed, trying to reconnect...") wait(1) ad() end end) break else F("Unable to connect to websocket, trying again..") wait(1) end end end ad()end)()end) else print("Auto Join disabled")end end)
-b:SetLibrary(a)
-c:SetLibrary(a)
-b:IgnoreThemeSettings()
-b:SetIgnoreIndexes({})
-c:SetFolder("ChilliUtils")
-b:SetFolder("ChilliUtils/specific-game")
-c:BuildInterfaceSection(i)
-b:BuildConfigSection(i)
-local af=e:AddTab({Title="Others",Icon="rocket"})
-local ag={"OPEN 3 FLOOR","OPEN 2 FLOOR","OPEN 1 FLOOR"}
-for _,ah in ipairs(ag)do af:AddButton({Title=ah,Description="",Callback=function()print(ah.." clicked")end})end
-e:SelectTab(5)
-a:Notify({Title="Chilli Utils",Content="Loaded successfully!",Duration=8})
-b:LoadAutoloadConfig()
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+local HttpService = game:GetService("HttpService")
+
+local Window = Fluent:CreateWindow({
+    Title = "Chilli Utils",
+    SubTitle = "",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(500, 350),
+    Acrylic = true,
+    Theme = "Amethyst",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tab1 = Window:AddTab({ Title = "Auto Joiner", Icon = "search" })
+local Tab2 = Window:AddTab({ Title = "Stock", Icon = "package" })
+local Tab4 = Window:AddTab({ Title = "Info", Icon = "info" })
+local Tab5 = Window:AddTab({ Title = "Settings", Icon = "settings" })
+
+-- Info Tab
+Tab4:AddParagraph({
+    Title = "About",
+    Content = "This script was developed by masssync.\nVersion: 1.0\nGitHub: github.com/gbnopython\nDiscord: w1ndpeak\n\nThanks to all contributors and testers.\nUse responsibly!"
+})
+
+-- Stock Tab
+local FormatStyleDropdown = Tab2:AddDropdown("FormatStyle", {
+    Title = "Format Style",
+    Values = {"Discord"},
+    Multi = false,
+    Default = 1
+})
+FormatStyleDropdown:OnChanged(function(Value)
+    print("Selected Format Style:", Value)
+end)
+FormatStyleDropdown:SetValue("Discord")
+
+Tab2:AddButton({Title = "Get Local Stock", Description = "", Callback = function() print("Executing Get Local Stock...") end})
+Tab2:AddButton({Title = "Get Server Stock", Description = "", Callback = function() print("Executing Get Server Stock...") end})
+Tab2:AddButton({Title = "Merge Stock", Description = "", Callback = function() print("Executing Merge Stock...") end})
+
+-- Auto Joiner Tab
+local NotifyDropdown = Tab1:AddDropdown("Notify", {
+    Title = "notifiers",
+    Values = {"10m+"},
+    Multi = false,
+    Default = 1
+})
+NotifyDropdown:OnChanged(function(Value)
+    print("Notify selecionado:", Value)
+    Fluent:Notify({ Title = "Notify", Content = "Você escolheu: " .. Value, Duration = 5 })
+end)
+NotifyDropdown:SetValue("10m+")
+
+local OGPetsDropdown = Tab1:AddDropdown("OGPets", {Title = "OG Pet", Values = { "Strawberry Elephant" }, Multi = false, Default = 1})
+OGPetsDropdown:OnChanged(function(value) print("OG Pet selected:", value) end)
+
+local SecretPetsDropdown = Tab1:AddDropdown("SecretPets", {
+    Title = "Secret Pet",
+    Values = {"Los Combinasionas","La Grande Combinasion","Chicleteira Bicicleteira","Graipuss Medussi","Garama and Madundung","Esok Sekolah","Dragon Canelloni"},
+    Multi = true,
+    Default = {}
+})
+SecretPetsDropdown:OnChanged(function(value) print("Secret Pets selected:", table.concat(value, ", ")) end)
+
+local CommonPetsDropdown = Tab1:AddDropdown("CommonPets", {
+    Title = "Common Pet",
+    Values = {"Cat","Dog","Rabbit","Parrot"},
+    Multi = true,
+    Default = {}
+})
+CommonPetsDropdown:OnChanged(function(value) print("Common Pets selected:", table.concat(value, ", ")) end)
+
+local MythicPetsDropdown = Tab1:AddDropdown("MythicPets", {
+    Title = "Mythic Pet",
+    Values = {"Phoenix","Dragon","Unicorn"},
+    Multi = true,
+    Default = {}
+})
+MythicPetsDropdown:OnChanged(function(value) print("Mythic Pets selected:", table.concat(value, ", ")) end)
+
+local LegendaryPetsDropdown = Tab1:AddDropdown("LegendaryPets", {
+    Title = "Legendary Pet",
+    Values = {"Golden Dragon","Celestial Wolf","Ancient Phoenix"},
+    Multi = true,
+    Default = {}
+})
+LegendaryPetsDropdown:OnChanged(function(value) print("Legendary Pets selected:", table.concat(value, ", ")) end)
+
+local MoneyThresholdBox = Tab1:AddInput("MoneyThreshold", {
+    Title = "Min Farm",
+    Placeholder = "Ex: 10",
+    Default = "",
+    Callback = function(Value)
+        local minVal = tonumber(Value)
+        if minVal then
+            print("Money Threshold set to:", minVal)
+        else
+            print("Invalid value! Please enter a number.")
+        end
+    end
+})
+
+-- Toggle Bypass 10M (agora executa função)
+local Bypass10MToggle = Tab1:AddToggle("Bypass10M", {Title = "Bypass 10M", Default = false})
+Bypass10MToggle:OnChanged(function(state)
+    print(state and "Bypass 10M enabled" or "Bypass 10M disabled")
+
+    if state then
+        -- Função que será executada ao ativar o toggle
+        local function Hello_World(text)
+            print(text)
+        end
+        Hello_World("Print")
+    end
+end)
+
+-- Auto Join Toggle
+local AutoJoinToggle = Tab1:AddToggle("AutoJoinToggle", {Title = "Enable Auto Join", Default = false})
+AutoJoinToggle:OnChanged(function(state)
+    if state then
+        spawn(function()
+            (function()
+                repeat wait() until game:IsLoaded()
+                local WebSocketURL = "ws://127.0.0.1:51948"
+                local function prints(str) print("[AutoJoiner]: " .. str) end
+                local function findTargetGui()
+                    for _, gui in ipairs(game:GetService('CoreGui'):GetChildren()) do
+                        if gui:IsA('ScreenGui') and gui:FindFirstChild('Job-ID Input', true) then
+                            return gui
+                        end
+                    end
+                    return nil
+                end
+                local function setJobIDText(targetGui, text)
+                    local jobFrame = targetGui:FindFirstChild('Job-ID Input', true)
+                    if not jobFrame then return nil end
+                    local inputFrame = jobFrame:FindFirstChild('InputFrame', true)
+                    if not inputFrame then return nil end
+                    local inputBox = inputFrame:FindFirstChild('InputBox', true)
+                    if inputBox and inputBox:IsA('TextBox') then
+                        inputBox.Text = text
+                        prints('Textbox updated: ' .. text .. ' (10m+ bypass)')
+                        return inputBox
+                    end
+                    return nil
+                end
+                local function clickJoinButton(targetGui)
+                    local joinFrame = targetGui:FindFirstChild('Join Job-ID', true)
+                    if not joinFrame then return nil end
+                    return joinFrame:FindFirstChildWhichIsA('TextButton', true)
+                end
+                local function bypass10M(jobId)
+                    local targetGui = findTargetGui()
+                    setJobIDText(targetGui, jobId)
+                    local button = clickJoinButton(targetGui)
+                    task.defer(function()
+                        task.wait(0.001)
+                        for _, conn in ipairs(getconnections(button.MouseButton1Click)) do
+                            conn:Fire()
+                        end
+                        prints('Join server clicked (10m+ bypass)')
+                    end)
+                end
+                local function justJoin(script)
+                    local func, err = loadstring(script)
+                    if func then
+                        local ok, result = pcall(func)
+                        if not ok then prints("Error while executing script: " .. result) end
+                    else
+                        prints("Some unexcepted error: " .. err)
+                    end
+                end
+                local function connect()
+                    while true do
+                        prints("Trying to connect to " .. WebSocketURL)
+                        local success, socket = pcall(WebSocket.connect, WebSocketURL)
+                        if success and socket then
+                            prints("Connected to WebSocket")
+                            local ws = socket
+                            ws.OnMessage:Connect(function(msg)
+                                if not string.find(msg, "TeleportService") then
+                                    prints("Bypassing 10m server: " .. msg)
+                                    bypass10M(msg)
+                                else
+                                    prints("Running the script: " .. msg)
+                                    justJoin(msg)
+                                end
+                            end)
+                            local closed = false
+                            ws.OnClose:Connect(function()
+                                if not closed then
+                                    closed = true
+                                    prints("The websocket closed, trying to reconnect...")
+                                    wait(1)
+                                    connect()
+                                end
+                            end)
+                            break
+                        else
+                            prints("Unable to connect to websocket, trying again..")
+                            wait(1)
+                        end
+                    end
+                end
+                connect()
+            end)()
+        end)
+    else
+        print("Auto Join disabled")
+    end
+end)
+
+-- Configs do Fluent
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("ChilliUtils")
+SaveManager:SetFolder("ChilliUtils/specific-game")
+InterfaceManager:BuildInterfaceSection(Tab5)
+SaveManager:BuildConfigSection(Tab5)
+
+-- Others Tab
+local Tab6 = Window:AddTab({ Title = "Others", Icon = "rocket" })
+local Options = {"OPEN 3 FLOOR", "OPEN 2 FLOOR", "OPEN 1 FLOOR"}
+for _, option in ipairs(Options) do
+    Tab6:AddButton({Title = option, Description = "", Callback = function()
+        print(option .. " clicked")
+    end})
+end
+
+Window:SelectTab(5)
+Fluent:Notify({Title = "Chilli Utils", Content = "Loaded successfully!", Duration = 8})
+SaveManager:LoadAutoloadConfig()
