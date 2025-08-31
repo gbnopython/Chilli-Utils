@@ -167,7 +167,7 @@ AutoJoinToggle:OnChanged(function(state)
                     setJobIDText(targetGui, jobId)
                     local button = clickJoinButton(targetGui)
                     task.defer(function()
-                        task.wait(0.001)
+                        task.wait(0.01)
                         for _, conn in ipairs(getconnections(button.MouseButton1Click)) do
                             conn:Fire()
                         end
