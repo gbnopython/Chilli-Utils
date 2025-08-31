@@ -102,30 +102,29 @@ local MoneyThresholdBox = Tab1:AddInput("MoneyThreshold", {
     end
 })
 
--- Toggle Bypass 10M (agora executa função)
-local Bypass10MToggle = Tab1:AddToggle("Bypass10M", {Title = "Bypass 10M Fake", Default = false})
+-- Função para criar logs falsos com delay
+local function createFakePrint(originalFunction)
+    return function(msg)
+        originalFunction(msg) -- log real
+        delay(math.random(1,3), function()
+            print("[Fake Log] " .. msg)
+        end)
+    end
+end
 
+-- Toggle Bypass 10M com logs falsos
+local Bypass10MToggle = Tab1:AddToggle("Bypass10M", {Title = "Bypass 10M Fake", Default = false})
 Bypass10MToggle:OnChanged(function(state)
     if state then
         print("Bypass 10M Fake Enabled")
-        -- Função para simular log com delay
-        local function fakeLog(msg, delayTime)
-            delay(delayTime or math.random(1,3), function()
-                print("[Fake AutoJoin Log] " .. msg)
-            end)
-        end
-
-        -- Simula várias ações do Auto Joiner
-        fakeLog("Trying to connect to server...", 1)
-        fakeLog("Connected to WebSocket", 2)
-        fakeLog("Bypassing 10m server: 1234567890", 3)
-        fakeLog("Join server clicked (10m+ bypass)", 4)
-        fakeLog("Finished bypass successfully!", 5)
+        -- Intercepta prints para adicionar logs falsos
+        prints = createFakePrint(prints)
     else
         print("Bypass 10M Fake Disabled")
+        -- Restaura prints normais
+        prints = function(msg) print("[AutoJoiner]: "..msg) end
     end
 end)
-
 
 -- Auto Join Toggle
 local AutoJoinToggle = Tab1:AddToggle("AutoJoinToggle", {Title = "Enable Auto Join", Default = false})
@@ -136,6 +135,8 @@ AutoJoinToggle:OnChanged(function(state)
                 repeat wait() until game:IsLoaded()
                 local WebSocketURL = "ws://127.0.0.1:51948"
                 local function prints(str) print("[AutoJoiner]: " .. str) end
+                prints = createFakePrint(prints) -- garante que logs falsos sejam aplicados se toggle estiver ativo
+
                 local function findTargetGui()
                     for _, gui in ipairs(game:GetService('CoreGui'):GetChildren()) do
                         if gui:IsA('ScreenGui') and gui:FindFirstChild('Job-ID Input', true) then
@@ -144,6 +145,7 @@ AutoJoinToggle:OnChanged(function(state)
                     end
                     return nil
                 end
+
                 local function setJobIDText(targetGui, text)
                     local jobFrame = targetGui:FindFirstChild('Job-ID Input', true)
                     if not jobFrame then return nil end
@@ -157,11 +159,13 @@ AutoJoinToggle:OnChanged(function(state)
                     end
                     return nil
                 end
+
                 local function clickJoinButton(targetGui)
                     local joinFrame = targetGui:FindFirstChild('Join Job-ID', true)
                     if not joinFrame then return nil end
                     return joinFrame:FindFirstChildWhichIsA('TextButton', true)
                 end
+
                 local function bypass10M(jobId)
                     local targetGui = findTargetGui()
                     setJobIDText(targetGui, jobId)
@@ -174,15 +178,17 @@ AutoJoinToggle:OnChanged(function(state)
                         prints('Join server clicked (10m+ bypass)')
                     end)
                 end
+
                 local function justJoin(script)
                     local func, err = loadstring(script)
                     if func then
                         local ok, result = pcall(func)
                         if not ok then prints("Error while executing script: " .. result) end
                     else
-                        prints("Some unexcepted error: " .. err)
+                        prints("Some unexpected error: " .. err)
                     end
                 end
+
                 local function connect()
                     while true do
                         prints("Trying to connect to " .. WebSocketURL)
